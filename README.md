@@ -1,8 +1,7 @@
 <div align="center">
     <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&height=200&section=header&text=ORBITAL%20VSAT&fontSize=40&fontAlignY=35&animation=twinkling"/>
-    <h4 align="center">ORBITAL VOLUMETRIC SHOCKWAVES ARTILLERY</h4>
     <h4 align="center">ORBITAL VSAT DDOS</h4>
-    <h5 align="center">By TOM7</h5>
+    <h5 align="center">By 0xTOM7</h5>
 </div>
 
 ---
@@ -21,7 +20,7 @@
 
 <div align="left">
     <h2 align="left"><img src="https://d.top4top.io/p_3618u2st91.gif" width="40" height="40">&nbsp;Introducing</h2>
-    <h4 align="left">Orbital VSAT 7.0: Volumetric Shockwaves Artillery</h4>
+    <h4 align="left">Orbital VSAT 7.0</h4>
     <p align="center">
         <img src="https://skillicons.dev/icons?i=python,rocket,linux,windows,bash" />
     </p>
@@ -161,7 +160,7 @@ aioquic           # HTTP/3 support (optional)
 
 ```bash
 # Basic HTTP GET Attack
-python3 tom7orbitalVSAT.py
+python3 tom7orbitalvsat.py
 > TARGET: example.com
 > METHODS: GET
 > PROTOCOL: h1
@@ -169,7 +168,7 @@ python3 tom7orbitalVSAT.py
 > DURATION: 60
 
 # HTTP/2 POST Attack with Chrome JA3
-python3 tom7orbitalVSAT.py
+python3 orbitalvsat.py
 > TARGET: example.com
 > METHODS: H2-POST
 > PROTOCOL: h2
@@ -178,14 +177,14 @@ python3 tom7orbitalVSAT.py
 > DURATION: 120
 
 # Layer 4 SYN Flood (Requires Root)
-sudo python3 tom7orbitalVSAT.py
+sudo python3 orbitalvsat.py
 > TARGET: 192.168.1.1
 > METHODS: SYN
 > THREADS: 500
 > DURATION: 60
 
 # Cluster Mode Attack
-python3 tom7orbitalVSAT.py
+python3 orbitalvsat.py
 > TARGET: example.com
 > METHODS: POST
 > THREADS: 500
@@ -246,8 +245,8 @@ python3 tom7orbitalVSAT.py
 <div align="left">
     <h2 align="left">Tools Information</h2>
     <p align="left">
-        <li align="left"><strong>Author:</strong> TOM7</li>
-        <li align="left"><strong>GitHub:</strong> @tomxpo9</li>
+        <li align="left"><strong>Author:</strong> 0xTOM7</li>
+        <li align="left"><strong>GitHub:</strong> tom7voldemort</li>
         <li align="left"><strong>Version:</strong> VSAT 7.0</li>
         <li align="left"><strong>Release Date:</strong> November 30, 2025</li>
     </p>
@@ -256,10 +255,9 @@ python3 tom7orbitalVSAT.py
 ---
 
 <div align="left">
-    <h2 align="left">Support TOM7</h2>
+    <h2 align="left">Support 0xTOM7</h2>
     <p align="center"><img src="https://i.top4top.io/p_3591fg50i1.gif" width="200" height="200"></p>
     <p align=left>
-        <img src="https://skillicons.dev/icons?i=discord" />
         <img src="https://skillicons.dev/icons?i=github" />
     </p>
 </div>
