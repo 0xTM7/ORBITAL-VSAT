@@ -18,11 +18,10 @@ try:
     import sys
     import threading
     import time
-    from config.logo import banner, helper
-    from config.color import Color
+    from cores.stdio import Clear, StrObject
+    from cores.logo import Banner, Helper
+    from cores.color import Color
     from concurrent.futures import ThreadPoolExecutor
-    from datetime import datetime
-    from sys import stdout
     from time import sleep
     from urllib.parse import urlencode, urlparse
 
@@ -38,7 +37,6 @@ try:
     # HTTP/3
     try:
         import asyncio
-
         from aioquic.asyncio.client import connect
         from aioquic.h3.connection import H3_ALPN
         from aioquic.quic.configuration import QuicConfiguration
@@ -52,21 +50,6 @@ except ModuleNotFoundError as e:
         f"{Color.orange}[{Color.red} WARNING {Color.orange}]: {Color.red} MODULE NOT INSTALLED {Color.darkgreen} {e} {Color.reset}"
     )
     sys.exit(1)
-
-
-def clear():
-    os.system("cls" if os.name == "nt" else "clear")
-
-
-def animx(text):
-    for c in text:
-        stdout.write(c)
-        stdout.flush()
-        sleep(0.0002)
-    print()
-
-
-now = datetime.now()
 
 # JA3 Profiles
 JA3Profiles = {
@@ -139,7 +122,9 @@ class OrbitalVSAT:
             try:
                 with open(filename, "r") as f:
                     return [
-                        l.strip() for l in f if l.strip() and not l.startswith("#")
+                        line.strip()
+                        for line in f
+                        if line.strip() and not line.startswith("#")
                     ] or default
             except Exception:
                 pass
@@ -168,29 +153,29 @@ class OrbitalVSAT:
         try:
             self.ip = socket.gethostbyname(self.host)
         except Exception:
-            animx(
+            StrObject.Typewriter(
                 f"{Color.orange}[{Color.red} ERROR {Color.orange}]: {Color.white} CANNOT RESOLVE: {Color.red} {self.host} {Color.reset}"
             )
             raise
         self.useragents = self.docloader("UA.txt", self.defaultUA)
-        animx(
+        StrObject.Typewriter(
             f"{Color.white}[{Color.cyan} INFO {Color.white}] {Color.cyan} TARGET: {Color.white} {self.target} {Color.reset}"
         )
-        animx(
+        StrObject.Typewriter(
             f"{Color.white}[{Color.cyan} INFO {Color.white}] {Color.cyan} IP ADDRESS: {Color.white} {self.ip}:{self.port} {Color.reset}"
         )
-        animx(
+        StrObject.Typewriter(
             f"{Color.white}[{Color.cyan} INFO {Color.white}] {Color.cyan} METHODS: {Color.white} {self.method} {Color.reset}"
         )
-        animx(
+        StrObject.Typewriter(
             f"{Color.white}[{Color.cyan} INFO {Color.white}] {Color.cyan} PROTOCOL: {Color.white} {self.protocol.upper()} {Color.reset}"
         )
-        animx(
+        StrObject.Typewriter(
             f"{Color.white}[{Color.cyan} INFO {Color.white}] {Color.cyan} JA3 Fingerprint: {Color.white} {self.jaProfile} {Color.reset}"
         )
 
         if self.clusterMode:
-            animx(
+            StrObject.Typewriter(
                 f"{Color.white}[{Color.cyan} INFO {Color.white}] {Color.cyan} CLUSTER: {Color.white} {self.processes} {Color.cyan} CORES x: {Color.white} {self.processes * self.threads} {Color.darkgreen} THREADS. {Color.reset}"
             )
 
@@ -374,7 +359,7 @@ class OrbitalVSAT:
                 if self.scheme == "https" and sock.selected_alpn_protocol() != "h2":
                     sock.close()
                     continue
-                config = h2.config.H2Configuration(client_side=True)
+                config = h2.cores.H2Configuration(client_side=True)
                 h2Connection = h2.connection.H2Connection(config=config)
                 h2Connection.initiate_connection()
                 h2Connection.increment_flow_control_window(15663105)
@@ -440,7 +425,7 @@ class OrbitalVSAT:
                 sock = self.createJa3Socket()
                 if not sock:
                     continue
-                config = h2.config.H2Configuration(client_side=True)
+                config = h2.cores.H2Configuration(client_side=True)
                 h2Connection = h2.connection.H2Connection(config=config)
                 h2Connection.initiate_connection()
                 sock.sendall(h2Connection.data_to_send())
@@ -778,7 +763,7 @@ class OrbitalVSAT:
 
     # CLUSTER & STATS
 
-    def cluster_process(self, process_id):
+    def ClusterProcess(self, process_id):
         """Cluster Process"""
         methodOptions = {
             "GET": self.httpExecutor,
@@ -811,6 +796,8 @@ class OrbitalVSAT:
         ThreadsExecutor = methodOptions.get(self.method, self.httpExecutor)
         with ThreadPoolExecutor(max_workers=self.threads) as executor:
             futures = [executor.submit(ThreadsExecutor, i) for i in range(self.threads)]
+            for f in futures:
+                f.result()
             while self.running.value:
                 sleep(1)
 
@@ -839,21 +826,21 @@ class OrbitalVSAT:
         except Exception:
             return
         self.running.value = 1
-        animx(f"\n{Color.darkgreen} {'=' * 100}")
-        animx(
+        StrObject.Typewriter(f"\n{Color.darkgreen} {'=' * 100}")
+        StrObject.Typewriter(
             f"{Color.cyan}[{Color.red} ORBITAL VSAT {Color.cyan}] {Color.cyan} STARTING ATTACK {Color.orange} {self.method} {Color.reset}"
         )
-        animx(f"{Color.darkgreen} {'=' * 100}\n")
+        StrObject.Typewriter(f"{Color.darkgreen} {'=' * 100}\n")
         statsThread = threading.Thread(target=self.statsExecutor, daemon=True)
         statsThread.start()
         if self.clusterMode:
             processes = []
             for i in range(self.processes):
-                p = mp.Process(target=self.cluster_process, args=(i,))
+                p = mp.Process(target=self.ClusterProcess, args=(i,))
                 p.start()
                 processes.append(p)
                 sleep(0.02)
-            animx(
+            StrObject.Typewriter(
                 f"{Color.cyan}[{Color.red} ORBITAL VSAT {Color.cyan}] {Color.cyan} CLUSTER: {Color.orange} {self.processes * self.threads} {Color.orange} THREADS ACTIVE!\n {Color.reset}"
             )
             try:
@@ -899,7 +886,10 @@ class OrbitalVSAT:
                 futures = [
                     executor.submit(ThreadsExecutor, i) for i in range(self.threads)
                 ]
-                animx(
+                for f in futures:
+                    f.result()
+
+                StrObject.Typewriter(
                     f"{Color.cyan}[{Color.red} ORBITAL VSAT {Color.cyan}] {Color.cyan} RUNNING: {Color.orange} {self.threads} {Color.orange} THREADS!\n {Color.reset}"
                 )
                 try:
@@ -911,28 +901,28 @@ class OrbitalVSAT:
         with self.statsLock:
             finalCount = self.requestsCount.value
             finalBytes = self.bytesSent.value
-        animx(
+        StrObject.Typewriter(
             f"{Color.cyan}[{Color.red} ORBITAL VSAT {Color.cyan}] {Color.cyan} FINAL RESULTS {Color.reset}"
         )
-        animx(f"{Color.darkgreen} {'=' * 100}")
-        animx(
+        StrObject.Typewriter(f"{Color.darkgreen} {'=' * 100}")
+        StrObject.Typewriter(
             f"{Color.white}[{Color.cyan} INFO {Color.white}] {Color.cyan} TOTAL REQUESTS: {Color.white} {finalCount:,} {Color.reset}"
         )
-        animx(
+        StrObject.Typewriter(
             f"{Color.white}[{Color.cyan} INFO {Color.white}] {Color.cyan} TOTAL SENT: {Color.white} {finalBytes / 1048576:.2f} {Color.cyan} Mb {Color.reset}"
         )
         if self.duration > 0:
-            animx(
+            StrObject.Typewriter(
                 f"{Color.white}[{Color.cyan} INFO {Color.white}] {Color.cyan} AVG RPS: {Color.white} {finalCount / self.duration:.0f} {Color.reset}"
             )
-            animx(
+            StrObject.Typewriter(
                 f"{Color.white}[{Color.cyan} INFO {Color.white}] {Color.cyan} AVG Bandwidth: {Color.white} {(finalBytes * 8) / (self.duration * 1048576):.2f} {Color.cyan} Mbps {Color.reset}"
             )
 
 
-def main():
-    clear()
-    banner()
+def Main():
+    Clear()
+    Banner()
     try:
         choice = (
             input(
@@ -942,29 +932,29 @@ def main():
             .lower()
         )
         if choice == "h":
-            helper()
+            Helper()
             input(
                 f"{Color.white}[{Color.cyan} INFO {Color.white}] {Color.cyan} PRESS ENTER TO CONTINUE .... {Color.reset}"
             )
         elif choice == "n":
             sys.exit(0)
-        animx(f"{Color.red} ORBITAL CONFIGURATION{Color.reset}")
-        tester = OrbitalVSAT()
-        tester.target = input(
+        StrObject.Typewriter(f"{Color.red} ORBITAL CONFIGURATION{Color.reset}")
+        VSAT = OrbitalVSAT()
+        VSAT.target = input(
             f"{Color.white}[{Color.orange} SET {Color.white}] {Color.darkgreen} TARGET {Color.white} > {Color.cyan}"
         ).strip()
-        if not tester.target:
+        if not VSAT.target:
             return
-        tester.method = (
+        VSAT.method = (
             input(
                 f"{Color.white}[{Color.orange} SET {Color.white}] {Color.darkgreen} METHODS {Color.white} > {Color.cyan}"
             )
             .strip()
             .upper()
         )
-        if not tester.method:
-            tester.method = "POST"
-        if tester.method in [
+        if not VSAT.method:
+            VSAT.method = "POST"
+        if VSAT.method in [
             "GET",
             "POST",
             "PUT",
@@ -985,7 +975,7 @@ def main():
                 .strip()
                 .lower()
             )
-            tester.protocol = proto if proto in ["h1", "h2", "h3"] else "h1"
+            VSAT.protocol = proto if proto in ["h1", "h2", "h3"] else "h1"
             ja3 = (
                 input(
                     f"{Color.white}[{Color.orange} SET {Color.white}] {Color.darkgreen} JA3 PROFILE {Color.white} [ chrome | firefox | safari ] > {Color.cyan}"
@@ -993,17 +983,17 @@ def main():
                 .strip()
                 .lower()
             )
-            tester.ja3profile = (
+            VSAT.ja3profile = (
                 ja3 if ja3 in ["chrome", "firefox", "safari"] else "chrome"
             )
         threads = input(
             f"{Color.white}[{Color.orange} SET {Color.white}] {Color.darkgreen} THREADS {Color.white} [ default 500 ] > {Color.cyan}"
         ).strip()
-        tester.threads = int(threads) if threads else 500
+        VSAT.threads = int(threads) if threads else 500
         duration = input(
             f"{Color.white}[{Color.orange} SET {Color.white}] {Color.darkgreen} DURATION {Color.white} [ seconds, default 60 ] > {Color.cyan}"
         ).strip()
-        tester.duration = int(duration) if duration else 60
+        VSAT.duration = int(duration) if duration else 60
         cluster = (
             input(
                 f"{Color.white}[{Color.orange} SET {Color.white}] {Color.darkgreen} CLUSTER MODE {Color.white} [ Y/n ] > {Color.cyan}"
@@ -1011,21 +1001,21 @@ def main():
             .strip()
             .lower()
         )
-        tester.clusterMode = cluster == "y"
-        tester.start()
+        VSAT.clusterMode = cluster == "y"
+        VSAT.start()
     except KeyboardInterrupt:
-        animx(
+        StrObject.Typewriter(
             f"{Color.red}[{Color.orange} INFO {Color.red}] {Color.orange} KEYBOARD INTERRUPTED."
         )
         sys.exit(0)
     except Exception as e:
-        animx(
+        StrObject.Typewriter(
             f"{Color.orange}[{Color.red} ERROR {Color.orange}]: {Color.red} {e} {Color.reset}"
         )
 
 
 if __name__ == "__main__":
     try:
-        main()
+        Main()
     except KeyboardInterrupt:
         os.exit(0)

@@ -83,9 +83,9 @@ xhelper = f"""
 """
 
 
-def banner():
+def Banner():
     print(xbanner)
 
 
-def helper():
+def Helper():
     print(xhelper)
