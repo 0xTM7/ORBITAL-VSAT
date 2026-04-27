@@ -1,8 +1,8 @@
 #!/usr/bin/python
 
 # ORBITAL VOLUMETRIC SHOCKWAVES ARTILLERY a.k.a ORBITAL VSAT
-# Author: 0xTM7
-# GitHub: @0xTM7 | https://github.com/0xTM7
+# Author: XTM26
+# GitHub: @XTM26 | https://github.com/XTM26
 # Release: November 25th, 2025
 # Version: VSAT.2.0
 # All Layers [ 3 | 4 | 7 ] + HTTP/2 + HTTP/3 + JA3 Spoof + Multi Methods

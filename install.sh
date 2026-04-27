@@ -16,10 +16,7 @@ Die()     { Err "$1"; exit 1; }
 Banner() {
   clear
   echo -e "${Cyan}${Bold}"
-  echo "  ╔═══════════════════════════════════════╗"
-  echo "  ║        OrbitalVSAT  Installer         ║"
-  echo "  ║     Support: Termux | Linux           ║"
-  echo "  ╚═══════════════════════════════════════╝"
+  echo "             TOMCAT-C2 Installer         "
   echo -e "${Nc}"
 }
 
@@ -113,24 +110,24 @@ InstallDeps() {
 InstallTool() {
   ScriptDir="$(cd "$(dirname "$0")" && pwd)"
   if [ "$Env" = "termux" ]; then
-    ToolDest="$PREFIX/opt/orbitalvsat"
+    ToolDest="$PREFIX/opt/tomcatc2"
   else
-    ToolDest="/opt/orbitalvsat"
+    ToolDest="/opt/tomcatc2"
   fi
 
-  [ -f "$ScriptDir/orbitalvsat.py" ] || Die "orbitalvsat.py not found in $ScriptDir"
+  [ -f "$ScriptDir/tomcatc2.py" ] || Die "tomcat-c2.py not found in $ScriptDir"
 
   Info "Copying $ScriptDir -> $ToolDest ..."
   $Sudo rm -rf "$ToolDest"
   $Sudo mkdir -p "$(dirname "$ToolDest")"
   $Sudo cp -r "$ScriptDir" "$ToolDest"
 
-  [ -f "$ToolDest/orbitalvsat.py" ] || Die "Copy failed: $ToolDest/orbitalvsat.py missing."
+  [ -f "$ToolDest/tomcatc2.py" ] || Die "Copy failed: $ToolDest/tomcatc2.py missing."
 
-  WrapperPath="$InstallDir/vsat"
+  WrapperPath="$InstallDir/tomcatc2"
   $Sudo tee "$WrapperPath" > /dev/null << WRAPPER
 #!/bin/bash
-exec $PythonCmd $ToolDest/orbitalvsat.py "\$@"
+exec $PythonCmd $ToolDest/tomcatc2.py "\$@"
 WRAPPER
 
   $Sudo chmod +x "$WrapperPath" || Die "Cannot set execute permission on wrapper."
@@ -140,21 +137,21 @@ WRAPPER
 
 Verify() {
   export PATH="$PATH:$InstallDir"
-  if command -v vsat &>/dev/null; then
-    Success "Done! Type ${Bold}vsat${Nc} to start OrbitalVSAT."
+  if command -v tomcat-c2 &>/dev/null; then
+    Success "Done! Type ${Bold}tomcat-c2${Nc} to start TOMCAT-C2."
   else
-    Warning "Install done. Restart terminal then type ${Bold}vsat${Nc}."
+    Warning "Install done. Restart terminal then type ${Bold}tomcat-c2${Nc}."
   fi
 }
 
 Uninstall() {
   if [ "$Env" = "termux" ]; then
-    ToolDest="$PREFIX/opt/orbitalvsat"
+    ToolDest="$PREFIX/opt/tomcatc2"
   else
-    ToolDest="/opt/orbitalvsat"
+    ToolDest="/opt/tomcatc2"
   fi
-  Info "Removing vsat wrapper..."
-  $Sudo rm -f "$InstallDir/vsat"
+  Info "Removing tomcat-c2 wrapper..."
+  $Sudo rm -f "$InstallDir/tomcatc2"
   Info "Removing $ToolDest ..."
   $Sudo rm -rf "$ToolDest"
   Success "Uninstall complete."
@@ -182,7 +179,7 @@ Main() {
   Verify
   echo ""
   echo -e "${Cyan}──────────────────────────────────────────${Nc}"
-  echo -e "  ${Bold}Usage     :${Nc} vsat"
+  echo -e "  ${Bold}Usage     :${Nc} tomcat-c2"
   echo -e "  ${Bold}Uninstall :${Nc} bash install.sh --uninstall"
   echo -e "${Cyan}──────────────────────────────────────────${Nc}"
   echo ""
