@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-from config.color import Color
+from cores.color import Color
 
 xbanner = f"""
 {Color.bold}{Color.red}
@@ -70,11 +70,11 @@ xhelper = f"""
             {Color.white}     ->{Color.orange} SMURF                 \t: {Color.orange} SMURF Attack
             {Color.white}     ->{Color.orange} FRAGGLE                   \t: {Color.orange} FRAGGLE Attack [ UDP + ECHO ]
 
-    {Color.white}[{Color.red}C{Color.white}]: {Color.cyan} Configuration Supports:
+    {Color.white}[{Color.red}C{Color.white}]: {Color.cyan} coresuration Supports:
             {Color.white}[{Color.red}+{Color.white}]: {Color.white} User-Agent Headers Randomization
             {Color.white}[{Color.red}+{Color.white}]: {Color.white} Proxy Address Randomization/Proxychaining
             {Color.white}[{Color.red}+{Color.white}]: {Color.white} Referers Randomization/Requests Sources Randomization
-            {Color.white}[{Color.red}+{Color.white}]: {Color.white} HTTP1 | HTTP2 | HTTP3 Configurations Support
+            {Color.white}[{Color.red}+{Color.white}]: {Color.white} HTTP1 | HTTP2 | HTTP3 coresurations Support
             {Color.white}[{Color.red}+{Color.white}]: {Color.white} Autofingerprinting JA3, TLS, Browser Like Requests [ chrome | firefox | safari ]
 
     {Color.white}[{Color.red}EXIT{Color.white}]: {Color.red} CTRL + C To Stop.
