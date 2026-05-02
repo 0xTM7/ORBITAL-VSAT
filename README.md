@@ -255,7 +255,7 @@ python3 orbitalvsat.py
         <li align="left"><strong>Author:</strong> XTM26</li>
         <li align="left"><strong>GitHub:</strong> XTM26</li>
         <li align="left"><strong>Version:</strong> VSAT 2.0</li>
-        <li align="left"><strong>Release:</strong> APRIL 13 2026</li>
+        <li align="left"><strong>Release:</strong> 2026, May 02</li>
     </p>
 </div>
 
